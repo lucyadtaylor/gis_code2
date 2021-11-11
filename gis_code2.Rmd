@@ -4,19 +4,32 @@ author: "LucyTaylor"
 date: "11/11/2021"
 output: html_document
 ---
+```{r, practice}
 x<- 1+1
 b<- 2+2
 print(x+b)
 t<-2
+```
+
+```{r, load data}
 library(sf)
 library(janitor)
 inequality <- read.csv("GIIfull.csv")%>%
   clean_names()
 countries <- read_sf('World_Countries__Generalized_.shp')
+```
 
+```{r}
 colnames(inequality)[2] <- "COUNTRY"
 library(raster)
 worldinequality <- merge(inequality, countries, by='COUNTRY')
+```
+
+
 
 v <- 5+5
 t <- v-3
+
+HW
+Read in global gender inequality data
+Join the global gender inequality index to spatial data of the World, creating a new column of difference in inequality between 2010 and 2019
