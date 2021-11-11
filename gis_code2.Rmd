@@ -65,6 +65,9 @@ worldinequality <- countries %>%
   left_join(., 
             inequalitycols,
             by = c("AFF_ISO"))
+
+v <- 5+5
+t <- v-3
 ```
 
 
