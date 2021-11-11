@@ -11,18 +11,60 @@ print(x+b)
 t<-2
 ```
 
+HW
+Read in global gender inequality data
+Join the global gender inequality index to spatial data of the World, creating a new column of difference in inequality between 2010 and 2019
 ```{r, load data}
 library(sf)
 library(janitor)
 inequality <- read.csv("GIIfull.csv")%>%
   clean_names()
 countries <- read_sf('World_Countries__Generalized_.shp')
+
+inequality <- read_csv(here::here("GIIfull.csv"),
+                       locale = locale(encoding = "latin1"),
+                       na = "..")
+countries <- st_read(here::here("World_Countries__Generalized_.shp"))
+```
+```{r}
+library(tidyverse)
+library(sf)
+library(here)
+library(janitor)
+install.packages("countrycode")
+library(countrycode)
+library(dplyr)
 ```
 
 ```{r}
-colnames(inequality)[2] <- "COUNTRY"
+counrtyinneq <- na.omit(inequality) 
+
+library(dplyr)
+
+#mine doesnt work 
+inequalitydiff <- inequality %>%
+  
+mutate(c = inequality$x2019 - inequality$x2010)
+
+inequalitycols<- inequality %>%
+  clean_names()%>%
+  select(country, x2019, x2010)%>%
+  mutate(difference=x2019-x2010)%>%
+  slice(1:189,)
+
+```
+could just do it on country code as weel, it does not have to be isocode but that is what he has done
+```{r, rename annd join}
+colnames(inequalitycols)[5] <- "AFF_ISO"
 library(raster)
-worldinequality <- merge(inequality, countries, by='COUNTRY')
+
+worldinequality <- merge(inequality, countries, by='AFF_ISO') #cant use this
+
+??left_join
+worldinequality <- countries %>% 
+  left_join(., 
+            inequalitycols,
+            by = c("AFF_ISO"))
 ```
 
 
@@ -30,6 +72,3 @@ worldinequality <- merge(inequality, countries, by='COUNTRY')
 v <- 5+5
 t <- v-3
 
-HW
-Read in global gender inequality data
-Join the global gender inequality index to spatial data of the World, creating a new column of difference in inequality between 2010 and 2019
